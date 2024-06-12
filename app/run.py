@@ -1,7 +1,9 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
-
+from app.controllers.user_controller import user_bp
+from app.controllers.reservation_controller import reservation_bp
+from app.controllers.restaurant_controller import restaurant_bp
 from app.database import db
 
 app = Flask(__name__)
@@ -21,7 +23,6 @@ swagger_ui_blueprint = get_swaggerui_blueprint(
 )
 app.register_blueprint(swagger_ui_blueprint, url_prefix=SWAGGER_URL)
 
-
 # Configuración de la base de datos
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///platform.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -32,6 +33,9 @@ db.init_app(app)
 # Inicializa la extensión JWTManager
 jwt = JWTManager(app)
 
+app.register_blueprint(user_bp, url_prefix="/api")
+app.register_blueprint(reservation_bp, url_prefix="/api")
+app.register_blueprint(restaurant_bp, url_prefix="/api")
 
 # Crea las tablas si no existen
 with app.app_context():
